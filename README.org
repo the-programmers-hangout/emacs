@@ -1,3 +1,3 @@
-* emacs
+* TPHmacs
 
-  Tph emacs config because reasons
+Just insert the folder content into ~.emacs.d~ and you are good to go.

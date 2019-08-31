@@ -1,0 +1,92 @@
+#+BEGIN_SRC emacs-lisp
+;; Yeet the custom shidd at the bottom
+(defconst custom-file "/dev/zero")
+
+;disabling toolbar bs
+(when (display-graphic-p)
+    (menu-bar-mode -1)
+    (tool-bar-mode -1)
+    (toggle-scroll-bar -1))
+
+(global-display-line-numbers-mode)
+
+(setq inhibit-startup-message t)
+(line-number-mode t)
+(column-number-mode t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+; utf-8 memes
+(setq-default locale-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(require 'package)
+(setq package-enable-at-startup nil)
+
+;; Package archives
+(add-to-list 'package-archives '("elpa" . "https://elpa.gnu.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+
+(package-initialize)
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(eval-when-compile
+  (require 'use-package))
+
+(use-package use-package
+  :config
+  (setq-default use-package-always-defer nil
+		  use-package-always-ensure t
+		  use-package-always-demand t))
+
+(setq-default byte-compile-warnings nil)
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+(use-package use-package-ensure-system-package)
+
+(use-package try)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package undo-tree
+  :ensure t)
+
+(use-package evil
+    :after undo-tree
+    :ensure t
+    :config
+    (evil-mode 1))
+
+; evil escape
+(use-package evil-escape)
+(evil-escape-mode t)
+
+(setq-default evil-escape-key-sequence "fd")
+(setq-default evil-escape-delay 0.2)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package doom-themes
+    :ensure t
+    :config
+    (load-theme 'doom-vibrant t)
+    (doom-themes-org-config)
+    (doom-themes-neotree-config)
+    :custom
+    (doom-vibrant-brighter-comments t))
+
+
+(use-package doom-modeline
+  :ensure t
+  :hook (after-init . doom-modeline-mode)
+  :config
+  (setq doom-modeline-height 30))
+#+END_SRC
