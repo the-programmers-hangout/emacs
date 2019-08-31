@@ -1,3 +1,20 @@
 * TPHmacs
 
+The Emacs brigade presents =TPHmacs=, The Programmers hangout's own
+little configuration for curious individuals.
+
+It will include the bare minimum in order to spark some sort of
+curiosity of how the ecosystem around Emacs works and maybe get you
+started on your own configuration with this as a starting point.
+
+* Installation
 Just insert the folder content into ~.emacs.d~ and you are good to go.
+
+* Learn more
+if you are new to Emacs, be sure to go through the tutorial in order
+to learn the absolute basics in order to navigate and use Emacs.
+
+You can get there by typing ~C-h t~ which is ~Ctrl-h and then t~.
+
+And if you have gone through the tutorial and wants to know more, then
+[[https://www.emacswiki.org/][The Emacs Wiki]] should hold a lot of answers to your every need.
