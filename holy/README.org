@@ -1,0 +1,15 @@
+* TPHmacs: holy
+
+This is the bare minimum for a holy config.
+
+** What is holy?
+It's a stolen distinction from /evil/. We're more GNU orientated
+than vim.
+
+* Installation
+If you already have a ~.emacs.d~ either remove it or move it (eg
+~mv ~/.emac.d ~/.emacs.d.old~). Next, clone this repository using
+~git clone git@github.com:the-programmers-hangout/emacs.git~. And then
+use the command ~cp -r emacs/holy ~/.emacs.d~.
+
+* Learn more
