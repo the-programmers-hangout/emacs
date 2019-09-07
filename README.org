@@ -7,8 +7,23 @@ It will include the bare minimum in order to spark some sort of
 curiosity of how the ecosystem around Emacs works and maybe get you
 started on your own configuration with this as a starting point.
 
+Now, there are many different kinds of users and as a result, there is
+no one standard to follow in terms of configuration. You should use
+what fits your needs and wants the best. Ergo, we've made /multiple/
+configurations for you to check out and learn from. You can find
+descriptions of them below.
+
+** Descriptions
+
+*** evil
+Get vim-esque keybindings and modal editing.
+
+*** holy
+More GNU keybindings and vanilla configuration.
+
 * Installation
 Just insert the folder content into ~.emacs.d~ and you are good to go.
+Note: it may be worth looking into [[https://www.gnu.org/software/stow/manual/stow.html][GNU stow]].
 
 * Learn more
 if you are new to Emacs, be sure to go through the tutorial in order
