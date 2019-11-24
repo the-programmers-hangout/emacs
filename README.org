@@ -13,14 +13,6 @@ what fits your needs and wants the best. Ergo, we've made /multiple/
 configurations for you to check out and learn from. You can find
 descriptions of them below.
 
-** Descriptions
-
-*** evil
-Get vim-esque keybindings and modal editing.
-
-*** holy
-More GNU keybindings and vanilla configuration.
-
 * Installation
 Just insert the folder content into ~.emacs.d~ and you are good to go.
 Note: it may be worth looking into [[https://www.gnu.org/software/stow/manual/stow.html][GNU stow]].
