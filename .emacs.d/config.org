@@ -1,0 +1,116 @@
+#+TITLE: TPHmacs
+#+AUTHOR: TPH Gang
+#+STARTUP: overview
+
+* Preface
+
+  Hey! So in your =init.el= you just have one line! The line
+
+  #+begin_src
+(org-babel-load-file (concat user-emacs-directory "config.org"))
+  #+end_src
+
+  is very simple. To start with, =(concat user-emacs-directory "config.org")=
+  concatenates "config.org" to your emacs directory. Although the [[file:~/github/emacs/README.org][README.org]] stated to
+  copy and paste this into your =.emacs.d=, your =.emacs.d= doesn't have to be where your
+  configuration is stored. There is a neat project called [[https://github.com/plexus/chemacs][chemacs]] which lets you run
+  multiple emacs configurations once you set it up. This can be helpful when you're
+  testing out new features or want to try other configurations.
+
+  So, assuming you're using =.emacs.d=, we now have the string =~/.emacs.d/config.org=.
+  =org-babel-load-file= does something particularly cool: it tangles emacs-lisp source
+  blocks  =~/.emacs.d/config.org=. Referring to documentations:
+
+  #+begin_quote
+  (org-babel-load-file FILE &optional COMPILE)
+
+  Load Emacs Lisp source code blocks in the Org FILE.
+  This function exports the source code using ‘org-babel-tangle’
+  and then loads the resulting file using ‘load-file’.  With
+  optional prefix argument COMPILE, the tangled Emacs Lisp file is
+  byte-compiled before it is loaded.
+  #+end_quote
+
+  To begin with, the definition mentions =load-file= which does what it sounds like: it
+  loads a file. If we had written the emacs configuration into a file like =config.el=,
+  we could have called =(load-file (concat user-emacs-directory "config.org")=. Or, we
+  could have left the entire configuration in =init.el= at that point... The benefit of
+  using an org file is that we get a /literate/ configuration. ~babel~ is an immensely
+  powerful tool which is heavily integrated into org (which we'll discuss later).
+
+  Backtracking to the idea of 'emacs-lisp source blocks' being 'tangled', essentially
+  any blocks in the org file starting with =#+begin_src emacs-lisp= to =#+end_src= will
+  be read into the compiled el file which gets loaded. Without specifying anything,
+  emacs will automagically try to use the name of the org file for the el file
+  (config.org will compile to config.el). This can be changed by modifying the file's
+  properties, which is as simple as placing =#+property: header-args :tangle init.el=
+  on top of the file. The snippet in the previous line tangles the file to =init.el=.
+
+* Pre-Configuration
+
+  This code should be executed first. It's general, but will make the rest of the configuration nicer since it's somewhat 'meta'.
+
+** Initialization
+
+   Add lexical binding support
+
+   #+begin_src emacs-lisp
+;; -*- lexical-binding: t -*-
+   #+end_src
+
+** Garbage Collection
+
+   We don't need garbage collection during start up.
+
+   #+begin_src emacs-lisp
+(eval-when-compile
+  (setq-local gc-cons-threshold most-positive-fixnum)
+  (setq-local gc-cons-percentage 0.6)
+  (setq-local file-name-handler-alist nil))
+   #+end_src
+
+** Package Archives
+
+   Special commands, should always be needed. Note the algorithm is a hotfix to a much larger [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=34341][emacs issue]].
+
+   #+begin_src emacs-lisp
+(require 'package)
+;; (setq package-enable-at-startup nil)
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+   #+end_src
+
+   Set up all the archive sources to pull from packages from.
+
+   #+begin_src emacs-lisp
+(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa-stable2" . "http://melpa-stable.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+
+(package-initialize)
+   #+end_src
+
+** Package Installers
+
+   [[https://github.com/jwiegley/use-package][use-package]] configuration. Helps clean up rest of the configuration and speeds up startup
+   by isolating packages.
+
+   #+begin_src emacs-lisp
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(eval-when-compile
+  (require 'use-package))
+
+(use-package use-package
+  :config
+  (setq-default use-package-always-defer nil
+                use-package-always-ensure t
+                use-package-always-demand t))
+
+(setq-default byte-compile-warnings nil)
+
+(use-package use-package-ensure-system-package)
+   #+end_src

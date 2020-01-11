@@ -1,0 +1,29 @@
+* Evil
+
+** What is evil?
+
+   *Evil* is an *e* xtensible *v* i *l* ayer for Emacs.
+
+** Evil Prerequisites
+
+   The extensible vi layer emulates the main features of Vim and adds
+   them onto Emacs. This is something which is essential for any former
+   Vim user and works right out of the box without any specific
+   configuration additions, however evil depends on [[file:undo-tree.org][undo-tree]].
+
+** Evil Configuration
+
+   #+begin_src emacs-lisp
+(use-package evil
+  :after undo-tree
+  :ensure t
+  :config
+  (evil-mode 1))
+
+                                        ; evil escape
+(use-package evil-escape)
+(evil-escape-mode t)
+
+(setq-default evil-escape-key-sequence "fd")
+(setq-default evil-escape-delay 0.2)
+   #+end_src
