@@ -4,7 +4,7 @@
 
    *Evil* is an *e* xtensible *v* i *l* ayer for Emacs.
 
-** Prerequisites
+** Evil Prerequisites
 
    The extensible vi layer emulates the main features of Vim and adds
    them onto Emacs. This is something which is essential for any former

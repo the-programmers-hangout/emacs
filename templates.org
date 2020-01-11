@@ -1,0 +1,10 @@
+* Template Package
+
+** What is Template Package?
+
+** Template Package Prerequisites
+
+** Template Package Configuration
+
+  #+begin_src emacs-lisp
+  #+end_src
