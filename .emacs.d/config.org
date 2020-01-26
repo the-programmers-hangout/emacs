@@ -82,11 +82,9 @@
    Set up all the archive sources to pull from packages from.
 
    #+begin_src emacs-lisp
-(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/") t)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-(add-to-list 'package-archives '("melpa-stable2" . "http://melpa-stable.milkbox.net/packages/") t)
-(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+   (setq package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
+                            ("gnu" . "http://elpa.gnu.org/packages/")
+                            ("org" . "https://orgmode.org/elpa/")))
 
 (package-initialize)
    #+end_src
