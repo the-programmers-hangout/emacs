@@ -110,8 +110,6 @@
                    use-package-verbose t))
 
    (setq-default byte-compile-warnings nil)
-
-   (use-package use-package-ensure-system-package)
    #+end_src
 
    Packages end up putting automatically-generated files (caches, downloads, etc.) into your base Emacs directory, cluttering it. Stop packages from [[https://github.com/emacscollective/no-littering][littering]]!
