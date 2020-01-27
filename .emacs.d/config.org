@@ -71,11 +71,11 @@
 
 ** Package Archives
 
-   Special commands, should always be needed. Note the algorithm is a hotfix to a much larger [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=34341][emacs issue]].
+   Special commands, should always be needed. Note the algorithm is a hotfix to a much larger [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=34341][Emacs issue]].
 
    #+begin_src emacs-lisp
    (require 'package)
-   ;; (setq package-enable-at-startup nil)
+   (setq package-enable-at-startup nil)
    (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
    #+end_src
 
@@ -91,8 +91,7 @@
 
 ** Package Installers
 
-   [[https://github.com/jwiegley/use-package][use-package]] configuration. Helps clean up rest of the configuration and speeds up startup
-   by isolating packages.
+   [[https://github.com/jwiegley/use-package][use-package]] configuration. Helps clean up rest of the configuration and speeds up startup by isolating packages.
 
    #+begin_src emacs-lisp
    (unless (package-installed-p 'use-package)
@@ -102,11 +101,13 @@
    (eval-when-compile
      (require 'use-package))
 
+   ;; Yes, it's a bit meta...
    (use-package use-package
      :config
      (setq-default use-package-always-defer nil
+                   use-package-always-demand t
                    use-package-always-ensure t
-                   use-package-always-demand t))
+                   use-package-verbose t))
 
    (setq-default byte-compile-warnings nil)
 
