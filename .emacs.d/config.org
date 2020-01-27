@@ -120,3 +120,23 @@
      :init
      (require 'no-littering))
    #+end_src
+
+* Projects
+
+  Projectile gives Emacs project management features, such as navigating files, finding occurences of a string, running build commands and more.
+  It detects project folders through version control (git, svn, ...) and you can optionally give a default project folder path within the config.
+
+  #+begin_src emacs-lisp
+  (use-package projectile
+    :custom
+    (projectile-project-search-path '("~/Projects/"))
+    (projectile-enable-caching t)
+    (projectile-require-project-root t)
+    (projectile-sort-order 'access-time)
+    :init
+    (projectile-mode))
+  #+end_src
+
+  #+begin_src emacs-lisp
+  (use-package magit)
+  #+end_src
