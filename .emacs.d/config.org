@@ -140,3 +140,11 @@
   #+begin_src emacs-lisp
   (use-package magit)
   #+end_src
+
+* Key bindings
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :init
+    (which-key-mode))
+  #+END_SRC
