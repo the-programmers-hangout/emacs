@@ -1,0 +1,11 @@
+* Additional C / C++ components
+
+If you want to use [[https://github.com/MaskRay/ccls][=ccls=]], which supports more language server features than =clangd= like overlays and semantic highlighting,
+
+#+BEGIN_SRC emacs-lisp
+(use-package ccls
+  :after lsp-mode
+  :hook ((c-mode c++-mode) . (lambda ()
+                               (require 'ccls)
+                               (lsp))))
+#+END_SRC
