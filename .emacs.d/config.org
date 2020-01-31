@@ -230,8 +230,6 @@
 
   These two are probably the hardest configuration to get properly solely because of "standards".
 
-  Add in mode hooks typescript mode.
-
   #+BEGIN_SRC emacs-lisp
   (use-package typescript-mode
     :hook
@@ -376,13 +374,12 @@
   A sample =rustic= setup is
 
   #+BEGIN_SRC emacs-lisp
-  ;; TODO this is disabled while rustic on MELPA is broken :(
-  ;; (use-package rustic
-  ;;   :custom
-  ;;   (rustic-format-on-save t)
-  ;;   (rustic-indent-method-chain t)
-  ;;   ;; The default is 'rls
-  ;;   (rustic-lsp-server 'rust-analyzer))
+  (use-package rustic
+    :custom
+    (rustic-format-on-save t)
+    (rustic-indent-method-chain t)
+    ;; The default is 'rls
+    (rustic-lsp-server 'rust-analyzer))
   #+END_SRC
 
 ** Clojure
