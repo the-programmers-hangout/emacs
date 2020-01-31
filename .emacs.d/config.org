@@ -58,7 +58,12 @@
    ;; -*- lexical-binding: t -*-
    #+end_src
 
-** Garbage Collection
+   Older versions of Emacs and those on Windows may have problems making secure remote connections due to [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=34341][this issue]].
+   #+BEGIN_SRC emacs-lisp
+   (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+   #+END_SRC
+
+*** Garbage Collection
 
    We don't need garbage collection during start up.
 
@@ -71,12 +76,11 @@
 
 ** Package Archives
 
-   Special commands, should always be needed. Note the algorithm is a hotfix to a much larger [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=34341][Emacs issue]].
+   All of the third-party packages we’re going to reference are available through MELPA (<https://melpa.org/>). This is your one stop shop for finding and installing Emacs addons. Run `M-x list-packages` to bring up an interactive searchable list. When the point is over a package line, hit `i` to mark the package for installation, then `x` to install all marked packages. If packages have updates, mark them all with `U`.
 
    #+begin_src emacs-lisp
    (require 'package)
    (setq package-enable-at-startup nil)
-   (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
    #+end_src
 
    Set up all the archive sources to pull from packages from.
