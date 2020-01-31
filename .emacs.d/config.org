@@ -238,23 +238,18 @@
            ("\\.tsx\\'" . typescript-mode)))
   #+END_SRC
 
-  Use Node modules is present. Especially helpful for versions of tools and for stuff like prettier.
+  Use Node modules if present. Especially helpful for versions of tools and for stuff like prettier.
 
   #+BEGIN_SRC emacs-lisp
   (use-package add-node-modules-path
-    :hook
-    ((web-mode . add-node-modules-path)
-     (rjsx-mode . add-node-modules-path)))
+    :hook ((web-mode rjsx-mode). add-node-modules-path))
   #+END_SRC
 
   Actually add prettier (which will read from =.prettierrc= if it exists now). Note you’ll have to install it using =npm install -g prettier=.
 
   #+BEGIN_SRC emacs-lisp
   (use-package prettier-js
-    :hook
-    ((js-mode . prettier-js-mode)
-     (typescript-mode . prettier-js-mode)
-     (rjsx-mode . prettier-js-mode)))
+    :hook ((js-mode typescript-mode rjsx-mode) . prettier-js-mode))
   #+END_SRC
 
   [[https://github.com/ananthakumaran/tide][TypeScript Interactive Development Environment for Emacs]]
