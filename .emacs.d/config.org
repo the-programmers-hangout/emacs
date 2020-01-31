@@ -171,30 +171,6 @@
     (lsp-log-io t)
     (lsp-prefer-flymake nil))
 
-  (use-package lsp-ui
-    :hook (lsp-mode . lsp-ui-mode)
-    :custom
-    (lsp-ui-doc-delay 3.0)
-    (lsp-ui-doc-include-signature t)
-    (lsp-ui-flycheck-enable t)
-    (lsp-ui-peek-always-show t)
-    (lsp-ui-sideline-enable t)
-    (lsp-ui-sideline-show-symbol t))
-
-  (use-package company
-    :hook (after-init . global-company-mode)
-    :custom
-    (company-tooltip-align-annotations t))
-
-  (use-package company-lsp
-    :after (company lsp-mode)
-    ;; TODO
-    ;; :bind (:map lsp-mode-map ("C-." . company-lsp))
-    :custom
-    (company-lsp-cache-candidates t))
-    ;; :config
-    ;; (add-to-list 'company-backends #'company-lsp))
-
   (use-package dap-mode
     :after lsp-mode
     :config
@@ -215,6 +191,36 @@
   ;;               ("C-x e l" . lsp-treemacs-errors-list)
   ;;               ("C-x s l" . lsp-treemacs-symbols)))
 
+  #+END_SRC
+
+  This package enhances the user interface, providing pop-up windows with documentation and visual indicators.
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package lsp-ui
+    :hook (lsp-mode . lsp-ui-mode)
+    :custom
+    (lsp-ui-doc-delay 3.0)
+    (lsp-ui-doc-include-signature t)
+    (lsp-ui-flycheck-enable t)
+    (lsp-ui-peek-always-show t))
+  #+END_SRC
+
+* Code completion
+
+  Company is the primary package that is used for code completion, it follows a frontend/backend system. The package =company= is the frontend, it will query a certain backend based on what code you are editing.
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package company
+    :hook (after-init . global-company-mode)
+    :custom
+    (company-tooltip-align-annotations t))
+
+  (use-package company-lsp
+    :after (company lsp-mode)
+    ;; TODO
+    ;; :bind (:map lsp-mode-map ("C-." . company-lsp))
+    :custom
+    (company-lsp-cache-candidates t))
   #+END_SRC
 
 * Languages
