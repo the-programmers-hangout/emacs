@@ -76,7 +76,7 @@
 
 ** Package Archives
 
-   All of the third-party packages we’re going to reference are available through MELPA (<https://melpa.org/>). This is your one stop shop for finding and installing Emacs addons. Run `M-x list-packages` to bring up an interactive searchable list. When the point is over a package line, hit `i` to mark the package for installation, then `x` to install all marked packages. If packages have updates, mark them all with `U`.
+   All of the third-party packages we’re going to reference are available through [[https://melpa.org/][MELPA]]. This is your one stop shop for finding and installing Emacs addons. Run =M-x list-packages= to bring up an interactive searchable list. When the point is over a package line, hit =i= to mark the package for installation, then =x= to install all marked packages. If packages have updates, mark them all with `U`.
 
    #+begin_src emacs-lisp
    (require 'package)
@@ -95,7 +95,7 @@
 
 ** Package Installers
 
-   [[https://github.com/jwiegley/use-package][use-package]] configuration. Helps clean up rest of the configuration and speeds up startup by isolating packages.
+   The primary tool we use to configure our Emacs packages, aptly called [[https://jwiegley.github.io/use-package/][use-package]], automatically downloads packages from a package source, speeds up startup by deferring package loading until necessary, and helps keep your configuration tidy by providing a place to combine package-specific settings and other mode and action hooks.
 
    #+begin_src emacs-lisp
    (unless (package-installed-p 'use-package)
@@ -117,6 +117,9 @@
    #+end_src
 
 * Projects
+
+  - https://github.com/bbatsov/projectile
+  - https://www.projectile.mx/en/latest/
 
   Projectile gives Emacs project management features, such as navigating files, finding occurences of a string, running build commands and more.
   It detects project folders through version control (git, svn, ...) and you can optionally give a default project folder path within the config.
@@ -145,11 +148,17 @@
     (projectile-mode))
   #+end_src
 
+* Magit
+
+  [[https://github.com/magit/magit][Magit]] is a Git interface, just like you have in many IDEs and text editors, but combining that with all the power of using Git from the command line.
+
   #+begin_src emacs-lisp
   (use-package magit)
   #+end_src
 
 * Key bindings
+
+  [[https://github.com/justbur/emacs-which-key][Which-key]] is a package that displays what bindings are available when you start pressing a key. It is incredibly useful, especially when you are new to Emacs or when you are trying a new package.
 
   #+BEGIN_SRC emacs-lisp
   (use-package which-key
