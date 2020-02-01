@@ -388,7 +388,7 @@
   - [[https://github.com/rust-lang/rust-mode][rust-mode]]
   - [[https://github.com/brotzeit/rustic][rustic]]
 
-  Of these, rust-mode is minimal, with just syntax highlighting, hooks to rustfmt for formatting buffers, hooks to =cargo build/run/test/clippy=, and some automatic integration with ={lsp,eglot}-mode= with using =rls= as the backend (=rustup component add rls=). Rustic is more full-featured, with all the features of rust-mode available, plus better cargo command naming and output, rustfix integration, and automatic flymake or flycheck integration with clippy. Using rust-analyzer as the language server backend is also possible (=rustup component add rust-analysis=).
+  Of these, rust-mode is minimal, with just syntax highlighting, hooks to rustfmt for formatting buffers, hooks to =cargo build/run/test/clippy=, and some automatic integration with ={lsp,eglot}-mode= with using =rls= as the backend (=rustup component add rls=). Rustic is more full-featured, with all the features of rust-mode available, plus better cargo command naming and output, rustfix integration, and automatic flymake or flycheck integration with clippy. Using [[https://github.com/rust-analyzer/rust-analyzer/][rust-analyzer]] as the language server backend is also possible.
 
   For example, here is how to run `cargo test` in each mode:
   - =rust-mode=: =M-x rust-test=
