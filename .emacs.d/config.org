@@ -108,8 +108,8 @@
    ;; Yes, it's a bit meta...
    (use-package use-package
      :config
-     (setq-default use-package-always-defer nil
-                   use-package-always-demand t
+     (setq-default use-package-always-defer t
+                   use-package-always-demand nil
                    use-package-always-ensure t
                    use-package-verbose t))
 
