@@ -1,0 +1,11 @@
+* Additional Python components
+
+If you want to use the Microsoft Python language server, it's in a separate LSP package that automatically downloads the language server itself:
+
+#+BEGIN_SRC emacs-lisp
+(use-package lsp-python-ms
+  :after lsp-mode
+  :hook (python-mode . (lambda ()
+                         (require 'lsp-python-ms)
+                         (lsp))))
+#+END_SRC

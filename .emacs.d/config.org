@@ -347,6 +347,20 @@
 
 ** Python
 
+   Unfortunately the Python package situation is a little confusing. There are a few older separate packages that provide a Python major mode, but we prefer the built-in one and avoid downloading a third-party one by not ensuring it. This allows us to have =use-package= configure Python mode without downloading anything.
+
+   #+BEGIN_SRC emacs-lisp
+   (use-package python
+     :ensure nil
+     :custom
+     (python-indent-guess-indent-offset-verbose nil)
+     (python-fill-docstring-style 'pep-257-nn))
+   #+END_SRC
+
+   To use a language server with Python, there are two options:
+   - =pyls= from [[https://github.com/palantir/python-language-server][Palantir]]: =pip install python-language-server=, and =lsp-mode= will automatically pick it up
+   - =mspyls= from [[https://github.com/emacs-lsp/lsp-python-ms][Microsoft]]: see [[file:../config/python.org][foo]]
+
 ** PHP
 
 ** C / C++
