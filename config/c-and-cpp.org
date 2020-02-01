@@ -9,3 +9,5 @@ If you want to use [[https://github.com/MaskRay/ccls][ccls]], which supports mor
                                (require 'ccls)
                                (lsp))))
 #+END_SRC
+
+If you have trouble with installing ccls from your package manager, you might need to compile it from source and point =ccls-executable= to it.
