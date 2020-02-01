@@ -180,17 +180,35 @@
   (use-package flycheck)
   #+END_SRC
 
-* Language servers
+* Language and debug servers
+
+  [[https://microsoft.github.io/language-server-protocol][LSP]] is a protocol used to implement IDE-like features in an editor-agnostic manner. This package will give us a uniform way to add features such as semantic highlighting, auto-completion, jump-to-definition, and so on.
 
   #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
     :commands lsp
-    :hook ((c-mode c++mode python-mode sh-mode) . lsp)
+    :hook ((c-mode c++-mode python-mode sh-mode) . lsp)
     :custom
     (lsp-auto-guess-root t)
     (lsp-log-io t)
     (lsp-prefer-flymake nil))
+  #+END_SRC
 
+  This package enhances the user interface, providing pop-up windows with documentation and visual indicators.
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package lsp-ui
+    :hook (lsp-mode . lsp-ui-mode)
+    :custom
+    (lsp-ui-doc-delay 3.0)
+    (lsp-ui-doc-include-signature t)
+    (lsp-ui-flycheck-enable t)
+    (lsp-ui-peek-always-show t))
+  #+END_SRC
+
+  Analogous to LSP is the [[https://microsoft.github.io/debug-adapter-protocol/][debug adapter protocol]].
+
+  #+BEGIN_SRC emacs-lisp
   (use-package dap-mode
     :after lsp-mode
     :config
@@ -210,24 +228,11 @@
   ;;   :bind (:map java-mode-map
   ;;               ("C-x e l" . lsp-treemacs-errors-list)
   ;;               ("C-x s l" . lsp-treemacs-symbols)))
-
-  #+END_SRC
-
-  This package enhances the user interface, providing pop-up windows with documentation and visual indicators.
-
-  #+BEGIN_SRC emacs-lisp
-  (use-package lsp-ui
-    :hook (lsp-mode . lsp-ui-mode)
-    :custom
-    (lsp-ui-doc-delay 3.0)
-    (lsp-ui-doc-include-signature t)
-    (lsp-ui-flycheck-enable t)
-    (lsp-ui-peek-always-show t))
   #+END_SRC
 
 * Code completion
 
-  Company is the primary package that is used for code completion, it follows a frontend/backend system. The package =company= is the frontend, it will query a certain backend based on what code you are editing.
+  Company is the primary package that is used for code completion, it follows a frontend/backend system. The package =company= is the frontend, it will query a certain backend based on what code you are editing, such as one provided by an active language server.
 
   #+BEGIN_SRC emacs-lisp
   (use-package company
@@ -237,8 +242,6 @@
 
   (use-package company-lsp
     :after (company lsp-mode)
-    ;; TODO
-    ;; :bind (:map lsp-mode-map ("C-." . company-lsp))
     :custom
     (company-lsp-cache-candidates t))
   #+END_SRC
@@ -281,7 +284,7 @@
   [[https://github.com/ananthakumaran/tide][TypeScript Interactive Development Environment for Emacs]]
 
   #+BEGIN_SRC emacs-lisp
-  ;; TODO
+  ;; TODO clean this up?
   (defun setup-tide-mode ()
     "Setup tide for javascript."
     (interactive)
@@ -327,20 +330,19 @@
   (use-package vue-html-mode)
 
   (use-package vue-mode
-    :defer t
     :mode
     (("\\.vue\\'"  . vue-mode)))
   #+END_SRC
 
 ** Java
 
+   Java is a built-in mode, but its LSP and DAP interfaces are included separately from the main =lsp-mode= and =dap-mode=.
+
   #+BEGIN_SRC emacs-lisp
   (use-package lsp-java
-    :after lsp-mode
-    :hook (java-mode . lsp))
-  ;; TODO
-  ;; (use-package dap-java
-  ;;   :after (lsp-java dap-mode))
+    :hook
+    ((java-mode . lsp)
+     (java-mode . (lambda () (require 'dap-java)))))
   #+END_SRC
 
 ** Python
