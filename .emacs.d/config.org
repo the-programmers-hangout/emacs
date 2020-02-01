@@ -250,6 +250,9 @@
 
 ** HTML / CSS / HTML Templates
 
+- [[https://docs.emmet.io/cheatsheet-a5.pdf][Emmet cheatsheet]]
+- [[https://www.youtube.com/watch?v=V8vizNQKtx0][Learn Emmet in 15 Minutes (YouTube)]]
+
   #+BEGIN_SRC emacs-lisp
   (use-package emmet-mode
     :hook ((css-mode php-mode sgml-mode rjsx-mode web-mode) . emmet-mode))
