@@ -392,7 +392,7 @@
     (cmake-tab-width 4))
   #+END_SRC
 
-  The language server interface that automatically comes with =lsp-mode= is for [[https://clang.llvm.org/extra/clangd/Installation.html][=clangd=]]. It works well for projects that are millions of lines in size and requires no configuration other than hooks. [[https://github.com/MaskRay/ccls][=ccls=]] is also available, which supports more language server features than =clangd= like overlays and semantic highlighting (see =config/c-and-cpp.org=), see [[file:../config/c-and-cpp.org][here]].
+  The language server interface that automatically comes with =lsp-mode= is for [[https://clang.llvm.org/extra/clangd/Installation.html][clangd]]. It works well for projects that are millions of lines in size and requires no configuration other than hooks. [[https://github.com/MaskRay/ccls][ccls]] is also available, which supports more language server features than =clangd= like overlays and semantic highlighting (see =config/c-and-cpp.org=), see [[file:../config/c-and-cpp.org][here]].
 
   Both LSP implementations benefit from having =compile_commands.json= in the Projectile-discovered project root, which is created by passing =-DCMAKE_EXPORT_COMPILE_COMMANDS=1= to =cmake=.
 
