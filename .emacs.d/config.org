@@ -174,7 +174,7 @@
   The two main frameworks that allow Emacs to interface with external linters are
   - [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Flymake.html][flymake]]
   - [[https://www.flycheck.org/en/latest/][flycheck]]
-  A detailed comparison is at https://www.flycheck.org/en/latest/user/flycheck-versus-flymake.html. We choose to use flycheck due to the sheer number of extensions written for it; pick your favorite language linter, and there’s probably a flycheck extension for it.
+  A detailed comparison is at https://www.flycheck.org/en/latest/user/flycheck-versus-flymake.html. We choose to use flycheck due to the sheer number of extensions written for it; pick your favorite language linter, and there’s probably a flycheck extension for it. Note that [[https://www.flycheck.org/en/latest/user/installation.html#windows-support][Windows isn't supported]].
 
   #+BEGIN_SRC emacs-lisp
   (use-package flycheck)
