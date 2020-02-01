@@ -206,7 +206,7 @@
     (lsp-ui-peek-always-show t))
   #+END_SRC
 
-  Analogous to LSP is the [[https://microsoft.github.io/debug-adapter-protocol/][debug adapter protocol]].
+  Analogous to LSP is the [[https://microsoft.github.io/debug-adapter-protocol/][debug adapter protocol]]. We use [[https://github.com/emacs-lsp/lsp-treemacs][treemacs]] for IDE-like display of errors.
 
   #+BEGIN_SRC emacs-lisp
   (use-package dap-mode
@@ -215,19 +215,19 @@
     (dap-mode t)
     (dap-ui-mode t))
 
-  ;; (use-package treemacs
-  ;;   :bind (:map global-map
-  ;;               ("C-x t t" . treemacs)
-  ;;               ("C-x t 1" . treemacs-select-window))
-  ;;   :custom
-  ;;   (treemacs-resize-icons 15))
+  (use-package treemacs
+    :bind (:map global-map
+                ("C-x t t" . treemacs)
+                ("C-x t 1" . treemacs-select-window))
+    :custom
+    (treemacs-resize-icons 15))
 
-  ;; (use-package lsp-treemacs
-  ;;   :init (lsp-treemacs-sync-mode 1)
+  (use-package lsp-treemacs
+    :init (lsp-treemacs-sync-mode 1)
 
-  ;;   :bind (:map java-mode-map
-  ;;               ("C-x e l" . lsp-treemacs-errors-list)
-  ;;               ("C-x s l" . lsp-treemacs-symbols)))
+    :bind (:map java-mode-map
+                ("C-x e l" . lsp-treemacs-errors-list)
+                ("C-x s l" . lsp-treemacs-symbols)))
   #+END_SRC
 
 * Code completion
