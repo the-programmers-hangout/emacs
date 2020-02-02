@@ -187,7 +187,6 @@
   #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
     :commands lsp
-    :hook ((c-mode c++-mode python-mode sh-mode) . lsp)
     :custom
     (lsp-auto-guess-root t)
     (lsp-log-io t)
@@ -355,6 +354,7 @@
    #+BEGIN_SRC emacs-lisp
    (use-package python
      :ensure nil
+     :hook (python-mode . lsp)
      :custom
      (python-indent-guess-indent-offset-verbose nil)
      (python-fill-docstring-style 'pep-257-nn))
@@ -379,6 +379,14 @@
         '((c-mode . javadoc)
           (java-mode . javadoc)
           (pike-mode . autodoc)))
+
+  (use-package c-mode
+    :ensure nil
+    :hook (c-mode . lsp))
+
+  (use-package c++-mode
+    :ensure nil
+    :hook (c++-mode . lsp))
   #+END_SRC
 
   CMake is a common enough build tool that =cmake-mode= is a necessity.
