@@ -364,8 +364,6 @@
    - =pyls= from [[https://github.com/palantir/python-language-server][Palantir]]: =pip install python-language-server=, and =lsp-mode= will automatically pick it up
    - =mspyls= from [[https://github.com/emacs-lsp/lsp-python-ms][Microsoft]]: see [[file:../config/python.org][here]].
 
-** PHP
-
 ** C / C++
 
   These are available as core modes, no install required. Defaults are good but things such as brace and comment style are configurable.
