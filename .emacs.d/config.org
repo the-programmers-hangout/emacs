@@ -222,11 +222,11 @@
     (treemacs-resize-icons 15))
 
   (use-package lsp-treemacs
-    :init (lsp-treemacs-sync-mode 1)
-
     :bind (:map java-mode-map
                 ("C-x e l" . lsp-treemacs-errors-list)
-                ("C-x s l" . lsp-treemacs-symbols)))
+                ("C-x s l" . lsp-treemacs-symbols))
+    :init
+    (lsp-treemacs-sync-mode 1))
   #+END_SRC
 
 * Code completion
