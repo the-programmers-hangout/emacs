@@ -177,7 +177,19 @@
   A detailed comparison is at https://www.flycheck.org/en/latest/user/flycheck-versus-flymake.html. We choose to use flycheck due to the sheer number of extensions written for it; pick your favorite language linter, and there’s probably a flycheck extension for it. Note that [[https://www.flycheck.org/en/latest/user/installation.html#windows-support][Windows isn't supported]].
 
   #+BEGIN_SRC emacs-lisp
-  (use-package flycheck)
+  (use-package flycheck
+    :hook (after-init . global-flycheck-mode)
+    :custom
+    (flycheck-check-syntax-automatically '(save mode-enabled)))
+  #+END_SRC
+
+** Documentation
+
+  When the point is overlapping with a function call, eldoc shows the function arguments in the echo area.
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package eldoc-mode
+    :hook (after-init . global-eldoc-mode))
   #+END_SRC
 
 * Language and debug servers
@@ -286,17 +298,6 @@
   [[https://github.com/ananthakumaran/tide][TypeScript Interactive Development Environment for Emacs]]
 
   #+BEGIN_SRC emacs-lisp
-  ;; TODO clean this up?
-  (defun setup-tide-mode ()
-    "Setup tide for javascript."
-    (interactive)
-    (tide-setup)
-    (flycheck-mode +1)
-    (setq flycheck-check-syntax-automatically '(save mode-enabled))
-    (eldoc-mode +1)
-    (tide-hl-identifier-mode +1)
-    (company-mode +1))
-
   (use-package tide
     :after
     (typescript-mode company flycheck)
@@ -313,10 +314,12 @@
 
   #+BEGIN_SRC emacs-lisp
   (use-package rjsx-mode
+    :hook
+    (rjsx-mode . lsp)
     :mode
     (("\\.js\\'"   . rjsx-mode)
      ("\\.jsx\\'"  . rjsx-mode)
-     ("\\.json\\'" . javascript-mode))
+     ("\\.json\\'" . js-mode))
     :magic ("/\\*\\* @jsx React\\.DOM \\*/" "^import React")
     :init
     (setq-default rjsx-basic-offset 2)
