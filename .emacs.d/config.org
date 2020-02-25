@@ -55,62 +55,408 @@
    Add lexical binding support
 
    #+begin_src emacs-lisp
-;; -*- lexical-binding: t -*-
+   ;; -*- lexical-binding: t -*-
    #+end_src
 
-** Garbage Collection
+   Older versions of Emacs and those on Windows may have problems making secure remote connections due to [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=34341][this issue]].
+   #+BEGIN_SRC emacs-lisp
+   (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+   #+END_SRC
+
+*** Garbage Collection
 
    We don't need garbage collection during start up.
 
    #+begin_src emacs-lisp
-(eval-when-compile
-  (setq-local gc-cons-threshold most-positive-fixnum)
-  (setq-local gc-cons-percentage 0.6)
-  (setq-local file-name-handler-alist nil))
+   (eval-when-compile
+     (setq-local gc-cons-threshold most-positive-fixnum)
+     (setq-local gc-cons-percentage 0.6)
+     (setq-local file-name-handler-alist nil))
    #+end_src
 
 ** Package Archives
 
-   Special commands, should always be needed. Note the algorithm is a hotfix to a much larger [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=34341][emacs issue]].
+   All of the third-party packages we’re going to reference are available through [[https://melpa.org/][MELPA]]. This is your one stop shop for finding and installing Emacs addons. Run =M-x list-packages= to bring up an interactive searchable list. When the point is over a package line, hit =i= to mark the package for installation, then =x= to install all marked packages. If packages have updates, mark them all with `U`.
 
    #+begin_src emacs-lisp
-(require 'package)
-;; (setq package-enable-at-startup nil)
-(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+   (require 'package)
+   (setq package-enable-at-startup nil)
    #+end_src
 
    Set up all the archive sources to pull from packages from.
 
    #+begin_src emacs-lisp
-(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/") t)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-(add-to-list 'package-archives '("melpa-stable2" . "http://melpa-stable.milkbox.net/packages/") t)
-(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+   (setq package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
+                            ("gnu" . "http://elpa.gnu.org/packages/")
+                            ("org" . "https://orgmode.org/elpa/")))
 
-(package-initialize)
+   (package-initialize)
    #+end_src
 
 ** Package Installers
 
-   [[https://github.com/jwiegley/use-package][use-package]] configuration. Helps clean up rest of the configuration and speeds up startup
-   by isolating packages.
+   The primary tool we use to configure our Emacs packages, aptly called [[https://jwiegley.github.io/use-package/][use-package]], automatically downloads packages from a package source, speeds up startup by deferring package loading until necessary, and helps keep your configuration tidy by providing a place to combine package-specific settings and other mode and action hooks.
 
    #+begin_src emacs-lisp
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+   (unless (package-installed-p 'use-package)
+     (package-refresh-contents)
+     (package-install 'use-package))
 
-(eval-when-compile
-  (require 'use-package))
+   (eval-when-compile
+     (require 'use-package))
 
-(use-package use-package
-  :config
-  (setq-default use-package-always-defer nil
-                use-package-always-ensure t
-                use-package-always-demand t))
+   ;; Yes, it's a bit meta...
+   (use-package use-package
+     :config
+     (setq-default use-package-always-defer t
+                   use-package-always-demand nil
+                   use-package-always-ensure t
+                   use-package-verbose t))
 
-(setq-default byte-compile-warnings nil)
-
-(use-package use-package-ensure-system-package)
+   (setq-default byte-compile-warnings nil)
    #+end_src
+
+* Projects
+
+  - https://github.com/bbatsov/projectile
+  - https://www.projectile.mx/en/latest/
+
+  Projectile gives Emacs project management features, such as navigating files, finding occurences of a string, running build commands and more.
+  It detects project folders through version control (git, svn, ...) and you can optionally give a default project folder path within the config.
+
+  #+begin_src emacs-lisp
+  (use-package projectile
+    ;; Getting complaints about undefined variables when these are placed in
+    ;; `:custom`.
+    :config
+    ;; Useful for any CMake-based project, and using `ccls` with C/C++
+    (setq projectile-project-root-files-top-down-recurring
+     (append
+      '("compile_commands.json" ".ccls")
+      projectile-project-root-files-top-down-recurring))
+    (setq projectile-globally-ignored-directories
+     (append
+      '("build" "CMakeFiles" ".ccls-cache")
+      projectile-globally-ignored-directories))
+    (setq projectile-globally-ignored-files
+     (append
+      '("cmake_install.cmake")
+      projectile-globally-ignored-files))
+    :custom
+    (projectile-project-search-path '("~/Projects/"))
+    (projectile-enable-caching t)
+    (projectile-require-project-root t)
+    (projectile-sort-order 'access-time)
+    :init
+    (projectile-mode))
+  #+end_src
+
+* Magit
+
+  [[https://github.com/magit/magit][Magit]] is a Git interface, just like you have in many IDEs and text editors, but combining that with all the power of using Git from the command line.
+
+  #+begin_src emacs-lisp
+  (use-package magit)
+  #+end_src
+
+* Key bindings
+
+  [[https://github.com/justbur/emacs-which-key][Which-key]] is a package that displays what bindings are available when you start pressing a key. It is incredibly useful, especially when you are new to Emacs or when you are trying a new package.
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :init
+    (which-key-mode))
+  #+END_SRC
+
+* Linters
+
+  The two main frameworks that allow Emacs to interface with external linters are
+  - [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Flymake.html][flymake]]
+  - [[https://www.flycheck.org/en/latest/][flycheck]]
+  A detailed comparison is at https://www.flycheck.org/en/latest/user/flycheck-versus-flymake.html. We choose to use flycheck due to the sheer number of extensions written for it; pick your favorite language linter, and there’s probably a flycheck extension for it. Note that [[https://www.flycheck.org/en/latest/user/installation.html#windows-support][Windows isn't supported]].
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :hook (after-init . global-flycheck-mode)
+    :custom
+    (flycheck-check-syntax-automatically '(save mode-enabled)))
+  #+END_SRC
+
+** Documentation
+
+  When the point is overlapping with a function call, eldoc shows the function arguments in the echo area.
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package eldoc-mode
+    :hook (after-init . global-eldoc-mode))
+  #+END_SRC
+
+* Language and debug servers
+
+  [[https://microsoft.github.io/language-server-protocol][LSP]] is a protocol used to implement IDE-like features in an editor-agnostic manner. This package will give us a uniform way to add features such as semantic highlighting, auto-completion, jump-to-definition, and so on.
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package lsp-mode
+    :commands lsp
+    :custom
+    (lsp-auto-guess-root t)
+    (lsp-log-io t)
+    (lsp-prefer-flymake nil))
+  #+END_SRC
+
+  This package enhances the user interface, providing pop-up windows with documentation and visual indicators.
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package lsp-ui
+    :hook (lsp-mode . lsp-ui-mode)
+    :custom
+    (lsp-ui-doc-delay 3.0)
+    (lsp-ui-doc-include-signature t)
+    (lsp-ui-flycheck-enable t)
+    (lsp-ui-peek-always-show t))
+  #+END_SRC
+
+  Analogous to LSP is the [[https://microsoft.github.io/debug-adapter-protocol/][debug adapter protocol]]. We use [[https://github.com/emacs-lsp/lsp-treemacs][treemacs]] for IDE-like display of errors.
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package dap-mode
+    :after lsp-mode
+    :config
+    (dap-mode t)
+    (dap-ui-mode t))
+
+  (use-package treemacs
+    :bind (:map global-map
+                ("C-x t t" . treemacs)
+                ("C-x t 1" . treemacs-select-window))
+    :custom
+    (treemacs-resize-icons 15))
+
+  (use-package lsp-treemacs
+    :bind (:map java-mode-map
+                ("C-x e l" . lsp-treemacs-errors-list)
+                ("C-x s l" . lsp-treemacs-symbols))
+    :init
+    (lsp-treemacs-sync-mode 1))
+  #+END_SRC
+
+* Code completion
+
+  Company is the primary package that is used for code completion, it follows a frontend/backend system. The package =company= is the frontend, it will query a certain backend based on what code you are editing, such as one provided by an active language server.
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package company
+    :hook (after-init . global-company-mode)
+    :custom
+    (company-tooltip-align-annotations t))
+
+  (use-package company-lsp
+    :after (company lsp-mode)
+    :custom
+    (company-lsp-cache-candidates t))
+  #+END_SRC
+
+* Languages
+
+** HTML / CSS / HTML Templates
+
+- [[https://docs.emmet.io/cheatsheet-a5.pdf][Emmet cheatsheet]]
+- [[https://www.youtube.com/watch?v=V8vizNQKtx0][Learn Emmet in 15 Minutes (YouTube)]]
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package emmet-mode
+    :hook ((css-mode php-mode sgml-mode rjsx-mode web-mode) . emmet-mode))
+  #+END_SRC
+
+** JavaScript / TypeScript
+
+  These two are probably the hardest configuration to get properly solely because of "standards".
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package typescript-mode
+    :hook
+    (typescript-mode . lsp)
+    :mode (("\\.ts\\'" . typescript-mode)
+           ("\\.tsx\\'" . typescript-mode)))
+  #+END_SRC
+
+  Use Node modules if present. Especially helpful for versions of tools and for stuff like prettier.
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package add-node-modules-path
+    :hook ((web-mode rjsx-mode). add-node-modules-path))
+  #+END_SRC
+
+  Actually add prettier (which will read from =.prettierrc= if it exists now). Note you’ll have to install it using =npm install -g prettier=.
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package prettier-js
+    :hook ((js-mode typescript-mode rjsx-mode) . prettier-js-mode)
+    :custom
+    ;; These checks are automatically handled by prettier.
+    (js2-missing-semi-one-line-override t)
+    (js2-strict-missing-semi-warning nil))
+  #+END_SRC
+
+  [[https://github.com/ananthakumaran/tide][TypeScript Interactive Development Environment for Emacs]]
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package tide
+    :after
+    (typescript-mode company flycheck)
+    :hook
+    ((typescript-mode . tide-setup)
+     (typescript-mode . tide-hl-identifier-mode)
+     (before-save . tide-format-before-save))
+    :config
+    (flycheck-add-next-checker 'typescript-tide 'javascript-eslint)
+    (flycheck-add-next-checker 'tsx-tide 'javascript-eslint))
+  #+END_SRC
+
+  Modern React, note it’s generally a bad idea to bind this to ts or tsx since TypeScript uses =:= for types, which rjsx doesn’t seem to interpret well (it would be very nice if this was fixed!):
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package rjsx-mode
+    :hook
+    (rjsx-mode . lsp)
+    :mode
+    (("\\.js\\'"   . rjsx-mode)
+     ("\\.jsx\\'"  . rjsx-mode)
+     ("\\.json\\'" . js-mode))
+    :magic ("/\\*\\* @jsx React\\.DOM \\*/" "^import React")
+    :init
+    (setq-default rjsx-basic-offset 2)
+    (setq-default rjsx-global-externs '("module" "require" "assert" "setTimeout" "clearTimeout" "setInterval" "clearInterval" "location" "__dirname" "console" "JSON")))
+
+  (use-package react-snippets
+    :after yasnippet)
+  #+END_SRC
+
+  For vue specifics as well:
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package vue-html-mode)
+
+  (use-package vue-mode
+    :mode
+    (("\\.vue\\'"  . vue-mode)))
+  #+END_SRC
+
+** Java
+
+   Java is a built-in mode, but its LSP and DAP interfaces are included separately from the main =lsp-mode= and =dap-mode=.
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package lsp-java
+    :hook
+    ((java-mode . lsp)
+     (java-mode . (lambda () (require 'dap-java)))))
+  #+END_SRC
+
+** Python
+
+   Unfortunately the Python package situation is a little confusing. There are a few older separate packages that provide a Python major mode, but we prefer the built-in one and avoid downloading a third-party one by not ensuring it. This allows us to have =use-package= configure Python mode without downloading anything.
+
+   #+BEGIN_SRC emacs-lisp
+   (use-package python
+     :ensure nil
+     :hook (python-mode . lsp)
+     :custom
+     (python-indent-guess-indent-offset-verbose nil)
+     (python-fill-docstring-style 'pep-257-nn))
+   #+END_SRC
+
+   To use a language server with Python, there are two options:
+   - =pyls= from [[https://github.com/palantir/python-language-server][Palantir]]: =pip install python-language-server=, and =lsp-mode= will automatically pick it up
+   - =mspyls= from [[https://github.com/emacs-lsp/lsp-python-ms][Microsoft]]: see [[file:../config/python.org][here]].
+
+** C / C++
+
+  These are available as core modes, no install required. Defaults are good but things such as brace and comment style are configurable.
+
+  #+BEGIN_SRC emacs-lisp
+  (setq c-basic-offset 4)
+  (setq c-default-style
+        '((java-mode . "java")
+          (awk-mode . "awk")
+          ;; default is "gnu"
+          (other . "k&r")))
+  (setq c-doc-comment-style
+        '((c-mode . javadoc)
+          (java-mode . javadoc)
+          (pike-mode . autodoc)))
+
+  (use-package c-mode
+    :ensure nil
+    :hook (c-mode . lsp))
+
+  (use-package c++-mode
+    :ensure nil
+    :hook (c++-mode . lsp))
+  #+END_SRC
+
+  CMake is a common enough build tool that =cmake-mode= is a necessity.
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package cmake-mode
+    :mode
+    (("CMakeLists\\.txt\\'" . cmake-mode)
+     ("CMakeCache\\.txt\\'" . cmake-mode)
+     ("\\.cmake\\'" . cmake-mode))
+    :custom
+    (cmake-tab-width 4))
+  #+END_SRC
+
+  The language server interface that automatically comes with =lsp-mode= is for [[https://clang.llvm.org/extra/clangd/Installation.html][clangd]]. It works well for projects that are millions of lines in size and requires no configuration other than hooks. [[https://github.com/MaskRay/ccls][ccls]] is also available, which supports more language server features than =clangd= like overlays and semantic highlighting (see =config/c-and-cpp.org=), see [[file:../config/c-and-cpp.org][here]].
+
+  Both LSP implementations benefit from having =compile_commands.json= in the Projectile-discovered project root, which is created by passing =-DCMAKE_EXPORT_COMPILE_COMMANDS=1= to =cmake=.
+
+** Rust
+
+  There are two available modes:
+  - [[https://github.com/rust-lang/rust-mode][rust-mode]]
+  - [[https://github.com/brotzeit/rustic][rustic]]
+
+  Of these, rust-mode is minimal, with just syntax highlighting, hooks to rustfmt for formatting buffers, hooks to =cargo build/run/test/clippy=, and some automatic integration with ={lsp,eglot}-mode= with using =rls= as the backend (=rustup component add rls=). Rustic is more full-featured, with all the features of rust-mode available, plus better cargo command naming and output, rustfix integration, and automatic flymake or flycheck integration with clippy. Using [[https://github.com/rust-analyzer/rust-analyzer/][rust-analyzer]] as the language server backend is also possible.
+
+  For example, here is how to run `cargo test` in each mode:
+  - =rust-mode=: =M-x rust-test=
+  - =rustic=: =M-x rustic-cargo-test=
+
+  A sample =rustic= setup is
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package rustic
+    :custom
+    (rustic-format-on-save t)
+    (rustic-indent-method-chain t)
+    ;; The default is 'rls
+    (rustic-lsp-server 'rust-analyzer))
+  #+END_SRC
+
+  For code completion, there is also the possibility to use racer; see [[file:../config/rust.org][here]].
+
+** Clojure
+
+  =clojure-mode= brings us basic functionalities like syntax highlighting, formatting and refactoring.
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package clojure-mode)
+  #+END_SRC
+
+  We want more advanced features, which we will get through [[https://cider.mx/][CIDER]], a minor mode that adds functionalities to Emacs for editing and developing Clojure applications. CIDER is a REPL-based environment for Clojure, adding code completion, debugging, testing, documentation lookup, project configuration and more. It is a huge package, and you'll want to read the documentations and experiment on your own.
+
+  When it is installed, you can go to your Clojure buffer and run the command =M-x cider-jack-in= to start a REPL and be able to use CIDER’s features.
+
+  #+BEGIN_SRC emacs-lisp
+  (use-package cider
+    :custom
+    (cider-print-fn 'fipp)
+    (cider-repl-pop-to-buffer-on-connect nil)
+    (cider-repl-display-in-current-window nil)
+    ;; enable if you want help displayed at the top of the CIDER nREPL
+    (cider-repl-display-help-banner nil)
+    ;; disable if it makes emacs slow
+    (cider-font-lock-dynamically t))
+  #+END_SRC

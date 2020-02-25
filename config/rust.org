@@ -1,0 +1,13 @@
+* Additional Rust components
+
+For code completion, there is also the possibility to use racer through https://github.com/racer-rust/emacs-racer, however it requires nightly Rust; rls and rust-analyzer work on the stable channel. It also requires some functionality that is in =rust-mode= but not =rustic=. Here is a translation of the instructions from their README:
+#+BEGIN_SRC emacs-lisp
+(use-package rust-mode
+  :init
+  (use-package racer
+    :hook ((rust-mode . racer-mode)
+           (racer-mode . eldoc-mode)
+           (racer-mode . company-mode))
+    :bind (:map rust-mode-map
+                ("TAB" . company-indent-or-complete))))
+#+END_SRC
