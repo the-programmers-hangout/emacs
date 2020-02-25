@@ -292,7 +292,11 @@
 
   #+BEGIN_SRC emacs-lisp
   (use-package prettier-js
-    :hook ((js-mode typescript-mode rjsx-mode) . prettier-js-mode))
+    :hook ((js-mode typescript-mode rjsx-mode) . prettier-js-mode)
+    :custom
+    ;; These checks are automatically handled by prettier.
+    (js2-missing-semi-one-line-override t)
+    (js2-strict-missing-semi-warning nil))
   #+END_SRC
 
   [[https://github.com/ananthakumaran/tide][TypeScript Interactive Development Environment for Emacs]]
