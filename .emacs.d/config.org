@@ -68,10 +68,25 @@
    We don't need garbage collection during start up.
 
    #+begin_src emacs-lisp
-   (eval-when-compile
-     (setq-local gc-cons-threshold most-positive-fixnum)
-     (setq-local gc-cons-percentage 0.6)
-     (setq-local file-name-handler-alist nil))
+(eval-and-compile
+  (defun srs|revert-gc ()
+    ;; reset values
+    (setq gc-cons-threshold 16777216
+          gc-cons-percentage 0.1
+          file-name-handler-alist (append last-file-name-handler-alist
+		                                  file-name-handler-alist))
+    ;; delete any duplicate values
+    (cl-delete-duplicates file-name-handler-alist :test 'equal)
+    ;; get rid of temporarily variables
+    (makunbound 'last-file-name-handler-alist))
+
+  ;; set everything to efficient limits and save values
+  (setq gc-cons-threshold most-positive-fixnum
+        gc-cons-percentage 0.6
+        last-file-name-handler-alist file-name-handler-alist
+        file-name-handler-alist nil)
+
+  (add-hook 'after-init-hook 'srs|revert-gc))
    #+end_src
 
 ** Package Archives
