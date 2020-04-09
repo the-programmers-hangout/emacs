@@ -203,7 +203,7 @@
   When the point is overlapping with a function call, eldoc shows the function arguments in the echo area.
 
   #+BEGIN_SRC emacs-lisp
-  (use-package eldoc-mode
+  (use-package eldoc
     :hook (after-init . global-eldoc-mode))
   #+END_SRC
 
@@ -249,9 +249,6 @@
     (treemacs-resize-icons 15))
 
   (use-package lsp-treemacs
-    :bind (:map java-mode-map
-                ("C-x e l" . lsp-treemacs-errors-list)
-                ("C-x s l" . lsp-treemacs-symbols))
     :init
     (lsp-treemacs-sync-mode 1))
   #+END_SRC
